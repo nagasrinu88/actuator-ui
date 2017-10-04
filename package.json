@@ -9,14 +9,11 @@
   "scripts": {
     "ng": "ng",
     "start-local": "ng serve",
-    "start1": "node src/server.js",
-    "start": "http-server dist/",
+    "start": "node src/server.js",
     "test": "ng test",
     "pree2e": "webdriver-manager update --standalone false --gecko false",
     "e2e": "protractor",
-    "1postinstall":" ng build --aot --target=production && mv dist/ src/",
-    "preinstall": "npm install -g http-server",
-    "postinstall": "ng build --prod"
+    "postinstall":" ng build --aot --target=production && mv dist/ src/"    
   },
   "private": true,
   "dependencies": {    
