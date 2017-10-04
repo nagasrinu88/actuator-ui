@@ -10,7 +10,7 @@ import {Hero} from '../../hero';
 
 @Component({
     selector: 'my-heroes',
-    templateUrl: '/my-heroes.component.html',
+    templateUrl: 'my-heroes.component.html',
     providers: [CustomerService]
 })
 
