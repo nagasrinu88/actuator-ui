@@ -1,0 +1,9 @@
+<ul>
+    <md-checkbox>Check me!</md-checkbox>
+    <li *ngFor="let hero of heroes" (click)="selectHero(hero)">
+        <a [routerLink]="['/heroes', hero.id]">
+            <span class="badge badge-primary"
+              [class.badge-danger]="selectedHero === hero">{{hero.id}} {{hero.name}}</span>
+        </a>
+    </li>    
+</ul>

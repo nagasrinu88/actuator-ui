@@ -1,3 +1,35 @@
-<h1>
-  {{title}}
-</h1>
+<md-toolbar color="primary">
+  <span>Test Application</span>  
+</md-toolbar>
+
+<md-sidenav-container class="example-container">
+    <md-sidenav #sidenav class="example-sidenav">
+        <md-list>
+            <md-list-item> <a routerLink="/dashboard">Dashboard</a> </md-list-item>
+            <md-list-item> <a routerLink="/heroes">Heroes</a> </md-list-item>
+            <md-list-item> <a routerLink="/profiles">Profiles</a> </md-list-item>
+            <md-list-item> <a routerLink="/profile/new">New Profile</a> </md-list-item>
+        </md-list>        
+    </md-sidenav>
+
+    <div class="container">
+        <h1>Angular CLI + Bootstrap</h1>
+        <div class="starter-template">
+            <button type="button" md-button (click)="sidenav.open()">
+                    Open Menu
+        </button>
+
+
+
+        <h1>{{title}}</h1>
+
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+<div class="example-sidenav-content">
+
+</div>
+
+</md-sidenav-container>
+
