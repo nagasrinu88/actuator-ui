@@ -41,6 +41,7 @@
     "rxjs": "^5.0.1",
     "ts-helpers": "^1.1.1",
     "typescript": "^2.2.1",
+    "jasmine-core": "2.5.2",
     "zone.js": "^0.7.2"
   },
   "devDependencies": {    
@@ -48,7 +49,7 @@
     "@types/jasmine": "2.5.38",
     "@types/node": "^6.0.42",
     "codelyzer": "~2.0.0-beta.1",
-    "jasmine-core": "2.5.2",
+    
     "jasmine-spec-reporter": "2.5.0",
     "karma": "1.2.0",
     "karma-chrome-launcher": "^2.0.0",
