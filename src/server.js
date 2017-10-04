@@ -4,16 +4,19 @@
  * and open the template in the editor.
  */
 const express = require('express');
-const app = express();
+const http = require('http');
 const path = require('path');
 
+const app = express();
 
 app.use(express.static(__dirname + '/dist'));
-app.listen(process.env.port || 8080);
-app.get('/**', function (req, res) {
+
+app.get('*', function (req, res) {
     res.sendFile(path.join(__dirname + '/dist/index.html'));
 });
 
-console.log("Node server started");
-
-
+const port = process.env.PORT || 8080;
+app.set('port', port);
+console.log("App running on port: "+port);
+const server = http.createServer(app);
+server.listen(port, () => console.log("Running"));
