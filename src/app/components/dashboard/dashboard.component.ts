@@ -3,48 +3,95 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import {Component} from '@angular/core';
+import {Component, ViewChild} from '@angular/core';
+import {DatePipe} from '@angular/common';
+
+
+import {AcutatorService, ApplicationService} from '../../services';
+
+import {Observable, Subscription} from 'rxjs';
+
+import {ChartData, ApplicationData} from '../../models'
 
 @Component({
     selector: 'my-dashboard',
-    templateUrl: 'dashboard.component.html'
+    templateUrl: 'dashboard.component.html',
+    providers: [AcutatorService, ApplicationService, DatePipe]
 })
 
 export class DashboardComponent {
+    public heapChartData: ChartData = new ChartData();
+    public nonHeapChartData: ChartData = new ChartData();
+    public memChartData: ChartData = new ChartData();
+    public systemInfo: any = {};
+    public threadsInfo: any = {};
+    public applicationInfo: any = {};
 
-    public lineChartData: Array<any> = [
-        {data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A'},
-        {data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B'},
-        {data: [18, 48, 77, 9, 100, 27, 40], label: 'Series C'}
-    ];
-    public lineChartLabels: Array<any> = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
-    public lineChartOptions: any = {
-        responsive: true
-    };    
-    public lineChartLegend: boolean = true;
-    public lineChartType: string = 'line';
+    private subscription: Subscription;
 
-    public randomize(): void {
-        let _lineChartData: Array<any> = new Array(this.lineChartData.length);
-        for (let i = 0; i < this.lineChartData.length; i++) {
-            _lineChartData[i] = {data: new Array(this.lineChartData[i].data.length), label: this.lineChartData[i].label};
-            for (let j = 0; j < this.lineChartData[i].data.length; j++) {
-                _lineChartData[i].data[j] = Math.floor((Math.random() * 100) + 1);
-            }
-        }
-        this.lineChartData = _lineChartData;
-    }
-
-    // events
-    public chartClicked(e: any): void {
-        console.log(e);
-    }
-
-    public chartHovered(e: any): void {
-        console.log(e);
+    constructor(private metricsService: AcutatorService,
+        private applicationService: ApplicationService,
+        private datePipe: DatePipe) {
     }
 
     ngOnInit(): void {
+        this.applicationService.activeApplication = new ApplicationData('Product Service','http://localhost:8080/ion-subscriptions/');
+        
+        this.heapChartData.data = [
+            {data: [], label: 'Initilized'},
+            {data: [], label: 'Used'},
+            {data: [], label: 'Committed'},
+            {data: [], label: 'Heap'}
+        ];
+        this.nonHeapChartData.data = [
+            {data: [], label: 'Committed'},
+            {data: [], label: 'Used'}
+        ];
+        this.memChartData.data = [
+            {data: [], label: 'Total'},
+            {data: [], label: 'Used'}
+        ];
+        this.applicationInfo.session = {};
+        this.applicationInfo.classes = {};
+
+        this.subscription = Observable.timer(3000, 10 * 1000).subscribe(x => {
+
+
+            this.metricsService.loadMetrics().then(response => {
+                this.systemInfo.processors = response['processors'];
+                this.systemInfo.uptime = this.datePipe.transform(response['instance.uptime'], 'HH:MM:ss');
+
+                this.threadsInfo.totalStarted = response['threads.totalStarted'];
+                this.threadsInfo.live = response['threads'];
+                this.threadsInfo.daemon = response['threads.daemon'];
+
+
+                this.applicationInfo.classes.total = response['classes'];
+                this.applicationInfo.classes.loaded = response['classes.loaded'];
+                this.applicationInfo.classes.unloaded = response['classes.unloaded'];
+                this.applicationInfo.session.live = response['httpsessions.active'];
+                this.applicationInfo.session.maxTimeout = response['httpsessions.max'];
+
+                let label = this.datePipe.transform(new Date(), 'HH:MM:ss');
+                this.heapChartData.addDataPoint(label, [response['heap.init'] / 1024,
+                response['heap.used'] / 1024, response['heap.committed'] / 1024,
+                response['heap'] / 1024]);
+                this.heapChartData.refresh();
+
+                this.nonHeapChartData.addDataPoint(label, [response['nonheap.committed'] / 1024,
+                response['nonheap.used'] / 1024]);
+                this.nonHeapChartData.refresh();
+
+                this.memChartData.addDataPoint(label, [response['mem'] / 1024,
+                (response['mem'] - response['mem.free']) / 1024]);
+                //console.log(this.lineChartData);
+                this.memChartData.refresh();
+            });
+        });
+    }
+    ngOnDestroy(): void {
+        this.subscription.unsubscribe();
+        console.log("Destroying the Dashboard Component");
     }
 }
 

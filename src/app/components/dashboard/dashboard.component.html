@@ -1,11 +1,35 @@
-<h2>Welcome to app dashboard</h2>
-<div style="display: block;" style="width: 600px;height:400px;">
-    <canvas baseChart
-            [datasets]="lineChartData"
-            [labels]="lineChartLabels"
-            [options]="lineChartOptions"            
-            [legend]="lineChartLegend"
-            [chartType]="lineChartType"
-            (chartHover)="chartHovered($event)"
-            (chartClick)="chartClicked($event)"></canvas>
+<div class='row'>
+    <div class="col-md-4">
+        <h5>System Config</h5>
+        <hr />
+        Processors: {{systemInfo.processors}}<br />
+        Up Time: {{systemInfo.uptime}}
+    </div>
+    <div class="col-md-4">
+        <h5>Threads Info</h5>
+        <hr />
+        Total Threads Started: {{threadsInfo.totalStarted}}<br />
+        Live Threads: {{threadsInfo.live}}<br />
+        Daemon Threads: {{threadsInfo.daemon}}
+    </div>    
+    <div class="col-md-4">
+        <h5>Application Stats</h5>
+        <hr />
+        Active Sessions: {{applicationInfo.session.live}}<br />
+        Max Session Timeout: {{applicationInfo.session.maxTimeout}}<br />
+        Total Classes: {{applicationInfo.classes.total}}<br />
+        Loaded Classes: {{applicationInfo.classes.loaded}}<br />
+        Unloaded Classes: {{applicationInfo.classes.unloaded}}
+    </div>    
+</div>
+<div class="row">    
+    <div class="col-md-6">
+        <my-chart [chartData]="heapChartData" [chartTitle]="'Heap Chart'"></my-chart>
+    </div>    
+    <div class="col-md-6">
+        <my-chart [chartData]="nonHeapChartData" [chartTitle]="'Non Heap Chart'"></my-chart>
+    </div>    
+    <div class="col-md-6">
+        <my-chart [chartData]="memChartData" [chartTitle]="'Memory Chart'"></my-chart>
+    </div>    
 </div>
