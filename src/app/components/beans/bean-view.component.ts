@@ -10,6 +10,6 @@ import {Component, Input, Output, EventEmitter} from '@angular/core';
     templateUrl: './bean-page.html'
 })
 export class BeanViewComponent {
-
+    bean: any = {};
 }
 
